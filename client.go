@@ -1,4 +1,4 @@
-package mwdict
+package mwapi
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/fsufitch/tagioalisi-bot/merriam-webster/types"
+	"github.com/fsufitch/merriam-webster-api/types"
 )
 
 var dictionaryAPIBaseURL *url.URL
