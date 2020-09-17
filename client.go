@@ -12,43 +12,58 @@ import (
 	"github.com/fsufitch/merriam-webster-api/types"
 )
 
-var dictionaryAPIBaseURL *url.URL
-
-func init() {
-	var err error
-	if dictionaryAPIBaseURL, err = url.Parse("https://www.dictionaryapi.com/api/v3/references/collegiate/json"); err != nil {
-		panic(err)
-	}
-}
-
 // Client describes access to the Merriam-Webster dictionary at dictionaryapi.com
 type Client interface {
 	SearchCollegiate(word string) ([]types.CollegiateResult, []string, error)
 }
 
-// BasicClient is a basic HTTP-based client for querying the M-W dictionary
-type BasicClient struct {
+// basicClient is a basic HTTP-based client for querying the M-W dictionary
+type basicClient struct {
 	APIKey    string
-	BaseURL   *url.URL
+	BaseURLs  *BaseURLs
 	UserAgent string
 	Client    *http.Client
 }
 
-// NewBasicClient creates a client based on a given API key
-func NewBasicClient(apiKey string, userAgent string) *BasicClient {
-	return &BasicClient{
+// BaseURLs is a configuration struct for passing in custom base URLs
+type BaseURLs struct {
+	Collegiate string
+}
+
+func (u *BaseURLs) update(other *BaseURLs) *BaseURLs {
+	copy := *u
+	if other != nil {
+		if other.Collegiate != "" {
+			copy.Collegiate = other.Collegiate
+		}
+
+		// more fields
+	}
+	return &copy
+}
+
+var defaultURLs = &BaseURLs{
+	Collegiate: "https://www.dictionaryapi.com/api/v3/references/collegiate/json",
+}
+
+// NewClient creates a client based on a given API key
+func NewClient(apiKey string, userAgent string, baseURLs *BaseURLs) Client {
+	return &basicClient{
 		APIKey:    apiKey,
-		BaseURL:   dictionaryAPIBaseURL,
+		BaseURLs:  defaultURLs.update(baseURLs),
 		UserAgent: userAgent,
 		Client:    http.DefaultClient,
 	}
 }
 
 // SearchCollegiate implements a search of the collegiate dictionary
-func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, []string, error) {
+func (bc basicClient) SearchCollegiate(word string) ([]types.CollegiateResult, []string, error) {
 	word = strings.TrimSpace(strings.ToLower(word))
 
-	queryURL := *bc.BaseURL
+	queryURL, err := url.Parse(bc.BaseURLs.Collegiate)
+	if err != nil {
+		return nil, nil, err
+	}
 	queryURL.Path = path.Join(queryURL.Path, word)
 
 	q, _ := url.ParseQuery(queryURL.RawQuery)
@@ -58,7 +73,7 @@ func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 
 	response, err := bc.Client.Do(&http.Request{
 		Method: "GET",
-		URL:    &queryURL,
+		URL:    queryURL,
 		Header: http.Header{
 			"User-Agent": {bc.UserAgent},
 		},
@@ -85,5 +100,5 @@ func (bc BasicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 		return nil, suggestions, nil
 	}
 
-	return nil, nil, fmt.Errorf("%v %v", err1, err2)
+	return nil, nil, fmt.Errorf("could not parse response as results or suggestions; response was: %s", string(body))
 }
