@@ -5,7 +5,7 @@ import "github.com/pkg/errors"
 // SupplementalInfo https://dictionaryapi.com/products/json#sec-2.snote
 type SupplementalInfo ArrayMultiMapContainer
 
-// SupplementalInfoElementType is an enum type for the types of elements in SI
+// SupplementalInfoElementType is an enum type for the types of elements in SupplementalInfo
 type SupplementalInfoElementType int
 
 // Values for SupplementalInfoElementType

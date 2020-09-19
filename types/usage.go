@@ -2,7 +2,8 @@ package types
 
 import "github.com/pkg/errors"
 
-type withUsages struct {
+// WithUsages is a compositing type for parsing the `usages` property
+type WithUsages struct {
 	// https://dictionaryapi.com/products/json#sec-2.usages
 	UsageParagraphs []UsageParagraphs `json:"usages"`
 }

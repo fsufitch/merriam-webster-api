@@ -2,7 +2,8 @@ package types
 
 import "github.com/pkg/errors"
 
-type withEtymology struct {
+// WithEtymology is a compositing type for parsing the `et` property
+type WithEtymology struct {
 	Etymology Etymology `json:"et"`
 }
 

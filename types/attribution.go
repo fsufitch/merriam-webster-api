@@ -1,6 +1,7 @@
 package types
 
-type withQuoteAttribution struct {
+// WithQuoteAttribution is a compositing type for parsing the `aq` property
+type WithQuoteAttribution struct {
 	// https://dictionaryapi.com/products/json#sec-2.aq
 	QuoteAttribution QuoteAttribution `json:"aq"`
 }

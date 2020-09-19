@@ -2,7 +2,8 @@ package types
 
 import "github.com/pkg/errors"
 
-type withSynonyms struct {
+// WithSynonyms is a compositing type for parsing the `syns` property
+type WithSynonyms struct {
 	// https://dictionaryapi.com/products/json#sec-2.syns
 	SynonymParagraphs []SynonymParagraph `json:"syns"`
 }

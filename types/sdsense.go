@@ -1,17 +1,18 @@
 package types
 
-type withDividedSense struct {
+// WithDividedSense is a compositing type for parsing the `sdsense` property
+type WithDividedSense struct {
 	DividedSense *DividedSense `json:"sdsense"`
 }
 
 // DividedSense https://dictionaryapi.com/products/json#sec-2.sdsense
 type DividedSense struct {
 	Divider string `json:"sd"`
-	withEtymology
-	withInflections
-	withGeneralLabels
-	withPronounciations
-	withSenseSpecificGrammaticalLabel
-	withSubjectStatusLabels
-	withDefiningText
+	WithEtymology
+	WithInflections
+	WithGeneralLabels
+	WithPronounciations
+	WithSenseSpecificGrammaticalLabel
+	WithSubjectStatusLabels
+	WithDefiningText
 }

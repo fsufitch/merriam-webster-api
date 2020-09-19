@@ -1,6 +1,7 @@
 package types
 
-type withPronounciations struct {
+// WithPronounciations is a compositing type for parsing the `prs` property
+type WithPronounciations struct {
 	Pronounciations []Pronounciation `json:"prs"`
 }
 
@@ -16,6 +17,7 @@ type Pronounciation struct {
 }
 
 // Sound https://dictionaryapi.com/products/json#sec-2.prs
+// To see how to use this sound file reference
 type Sound struct {
 	Filename string `json:"audio"`
 }

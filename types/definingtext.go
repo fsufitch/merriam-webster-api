@@ -2,7 +2,8 @@ package types
 
 import "github.com/pkg/errors"
 
-type withDefiningText struct {
+// WithDefiningText is a compositing type for parsing the `dt` property
+type WithDefiningText struct {
 	// https://dictionaryapi.com/products/json#sec-2.dt
 	DefiningText DefiningText `json:"dt"`
 }
@@ -88,7 +89,7 @@ func (dt DefiningText) Contents() ([]DefiningTextElement, error) {
 		case DefiningTextElementTypeVerbalIllustrations:
 			var out []VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, withVerbalIllustrations: withVerbalIllustrations{out}})
+			elements = append(elements, DefiningTextElement{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
 		default:
 			err = errors.New("unknown element type in defining text")
 		}
@@ -109,7 +110,7 @@ type DefiningTextElement struct {
 	RunIn            *RunIn
 	SupplementalInfo *SupplementalInfo
 	withUsageNotes
-	withVerbalIllustrations
+	WithVerbalIllustrations
 }
 
 // Biography https://dictionaryapi.com/products/json#sec-2.bnw
@@ -130,6 +131,6 @@ type CalledAlsoTarget struct {
 	Text                string `json:"cat"`
 	TargetID            string `json:"catref"`
 	ParenthesizedNumber string `json:"pn"`
-	withPronounciations
-	withParenthesizedSubjectStatusLabel
+	WithPronounciations
+	WithParenthesizedSubjectStatusLabel
 }

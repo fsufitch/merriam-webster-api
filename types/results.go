@@ -2,33 +2,33 @@ package types
 
 // CollegiateResult is a result from a search through the M-W Collegiate dictionary
 type CollegiateResult struct {
-	withMetadata
-	withHomograph
-	withHeadwordInfo
+	WithMetadata
+	WithHomograph
+	WithHeadwordInfo
 
-	withFunctionalLabel
-	withGeneralLabels
-	withSubjectStatusLabels
-	withParenthesizedSubjectStatusLabel
-	withSenseSpecificInflectionPluralLabel // might not belong here?
-	withSenseSpecificGrammaticalLabel      // might not belong here?
+	WithFunctionalLabel
+	WithGeneralLabels
+	WithSubjectStatusLabels
+	WithParenthesizedSubjectStatusLabel
+	WithSenseSpecificInflectionPluralLabel // might not belong here?
+	WithSenseSpecificGrammaticalLabel      // might not belong here?
 
-	withInflections
-	withCognateCrossReferences
+	WithInflections
+	WithCognateCrossReferences
 
-	withDefinitions
+	WithDefinitions
 
 	// misc
-	withDefinedRunOns
+	WithDefinedRunOns
 	withUndefinedRunOns
-	withDirectionalCrossReferences
-	withUsages
-	withSynonyms
-	withQuotes
-	withTable
+	WithDirectionalCrossReferences
+	WithUsages
+	WithSynonyms
+	WithQuotes
+	WithTable
 
-	withEtymology
-	withFirstKnownDate
+	WithEtymology
+	WithFirstKnownDate
 
-	withShortDefinitions
+	WithShortDefinitions
 }

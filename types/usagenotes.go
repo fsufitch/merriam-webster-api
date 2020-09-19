@@ -2,6 +2,7 @@ package types
 
 import "github.com/pkg/errors"
 
+// WithUsageNotes is a compositing type for parsing the `uns` property
 type withUsageNotes struct {
 	UsageNotes []UsageNote
 }

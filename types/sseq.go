@@ -7,7 +7,8 @@ import (
 // ErrInvalidSenseSequence is an error when the sense sequence is structured wrong
 var ErrInvalidSenseSequence = errors.New("invalid sense sequence")
 
-type withSenseSequence struct {
+// WithSenseSequence is a compositing type for parsing the `sseq` property
+type WithSenseSequence struct {
 	SenseSequence SenseSequence `json:"sseq"`
 }
 

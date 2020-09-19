@@ -2,7 +2,8 @@ package types
 
 import "github.com/pkg/errors"
 
-type withUndefinedRunonText struct {
+// WithUndefinedRunonText is a compositing type for parsing the `utxt` property
+type WithUndefinedRunonText struct {
 	UndefinedRunonText UndefinedRunonText `json:"utxt"`
 }
 
@@ -48,7 +49,7 @@ func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextElement, error) {
 		case UndefinedRunonTextElementTypeVerbalIllustrations:
 			var out []VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UndefinedRunonTextElement{Type: typ, withVerbalIllustrations: withVerbalIllustrations{out}})
+			elements = append(elements, UndefinedRunonTextElement{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
 		case UndefinedRunonTextElementTypeUsageNotes:
 			var out []UsageNote
 			err = el.UnmarshalValue(&out)
@@ -63,6 +64,6 @@ func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextElement, error) {
 // UndefinedRunonTextElement is an element of the SI container
 type UndefinedRunonTextElement struct {
 	Type UndefinedRunonTextElementType
-	withVerbalIllustrations
+	WithVerbalIllustrations
 	withUsageNotes
 }

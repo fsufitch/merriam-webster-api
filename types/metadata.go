@@ -1,6 +1,7 @@
 package types
 
-type withMetadata struct {
+// WithMetadata is a compositing type for parsing the `metadata` property
+type WithMetadata struct {
 	Metadata Metadata `json:"meta"`
 }
 

@@ -1,6 +1,7 @@
 package types
 
-type withInflections struct {
+// WithInflections is a compositing type for parsing the `ins` property
+type WithInflections struct {
 	Inflections []Inflection `json:"ins"`
 }
 
@@ -9,6 +10,6 @@ type Inflection struct {
 	Spelled string `json:"if"`
 	Cutback string `json:"ifc"`
 	Label   string `json:"il"`
-	withPronounciations
-	withSenseSpecificInflectionPluralLabel
+	WithPronounciations
+	WithSenseSpecificInflectionPluralLabel
 }

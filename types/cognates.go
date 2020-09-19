@@ -1,6 +1,7 @@
 package types
 
-type withCognateCrossReferences struct {
+// WithCognateCrossReferences is a compositing type for parsing the `cxs` property
+type WithCognateCrossReferences struct {
 	CognateCrossReferences []CognateCrossReference `json:"cxs"`
 }
 

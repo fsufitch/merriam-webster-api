@@ -5,7 +5,7 @@ import "github.com/pkg/errors"
 // RunIn https://dictionaryapi.com/products/json#sec-2.ri
 type RunIn ArrayMultiMapContainer
 
-// RunInElementType is an enum type for the types of elements in RI
+// RunInElementType is an enum type for the types of elements in RunIn
 type RunInElementType int
 
 // Values for RuninElementType
@@ -66,6 +66,6 @@ type RunInElement struct {
 // RunInWrap https://dictionaryapi.com/products/json#sec-2.ri
 type RunInWrap struct {
 	Word string
-	withPronounciations
-	withVariants
+	WithPronounciations
+	WithVariants
 }

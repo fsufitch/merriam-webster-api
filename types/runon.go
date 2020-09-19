@@ -1,6 +1,7 @@
 package types
 
-type withDefinedRunOns struct {
+// WithDefinedRunOns is a compositing type for parsing the `dros` property
+type WithDefinedRunOns struct {
 	// https://dictionaryapi.com/products/json#sec-2.dros
 	DefinedRunOns []DefinedRunOn `json:"dros"`
 }
@@ -8,13 +9,13 @@ type withDefinedRunOns struct {
 // DefinedRunOn https://dictionaryapi.com/products/json#sec-2.dros
 type DefinedRunOn struct {
 	Phrase string `json:"drp"`
-	withDefinitions
-	withEtymology
-	withGeneralLabels
-	withPronounciations
-	withParenthesizedSubjectStatusLabel
-	withSubjectStatusLabels
-	withVariants
+	WithDefinitions
+	WithEtymology
+	WithGeneralLabels
+	WithPronounciations
+	WithParenthesizedSubjectStatusLabel
+	WithSubjectStatusLabels
+	WithVariants
 }
 
 type withUndefinedRunOns struct {
@@ -24,6 +25,6 @@ type withUndefinedRunOns struct {
 // UndefinedRunOn https://dictionaryapi.com/products/json#sec-2.uros
 type UndefinedRunOn struct {
 	Word string `json:"ure"`
-	withFunctionalLabel
+	WithFunctionalLabel
 	Texts struct{} `json:"utxt"`
 }
