@@ -5,14 +5,14 @@ import "github.com/pkg/errors"
 // WithSynonyms is a compositing type for parsing the `syns` property
 type WithSynonyms struct {
 	// https://dictionaryapi.com/products/json#sec-2.syns
-	SynonymParagraphs []SynonymParagraph `json:"syns"`
+	SynonymParagraphs []SynonymParagraph `json:"syns,omitempty"`
 }
 
 // SynonymParagraph https://dictionaryapi.com/products/json#sec-2.syns
 type SynonymParagraph struct {
-	Label       string               `json:"pl"`
-	Text        SynonymParagraphText `json:"pt"`
-	SeeAlsoRefs []string             `json:"sarefs"`
+	Label       string                `json:"pl,omitempty"`
+	Text        *SynonymParagraphText `json:"pt,omitempty"`
+	SeeAlsoRefs []string              `json:"sarefs,omitempty"`
 }
 
 // SynonymParagraphText https://dictionaryapi.com/products/json#sec-2.syns

@@ -9,7 +9,7 @@ var ErrInvalidSenseSequence = errors.New("invalid sense sequence")
 
 // WithSenseSequence is a compositing type for parsing the `sseq` property
 type WithSenseSequence struct {
-	SenseSequence SenseSequence `json:"sseq"`
+	SenseSequence *SenseSequence `json:"sseq,omitempty"`
 }
 
 // SenseSequence https://dictionaryapi.com/products/json#sec-2.vis

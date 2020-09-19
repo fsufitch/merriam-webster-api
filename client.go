@@ -14,6 +14,7 @@ import (
 
 // Client describes access to the Merriam-Webster dictionary at dictionaryapi.com
 type Client interface {
+	SetDebugf(func(string, ...interface{}) (int, error))
 	SearchCollegiate(word string) ([]types.CollegiateResult, []string, error)
 }
 
@@ -23,6 +24,7 @@ type basicClient struct {
 	BaseURLs  *BaseURLs
 	UserAgent string
 	Client    *http.Client
+	Debugf    func(string, ...interface{}) (int, error)
 }
 
 // BaseURLs is a configuration struct for passing in custom base URLs
@@ -53,6 +55,7 @@ func NewClient(apiKey string, userAgent string, baseURLs *BaseURLs) Client {
 		BaseURLs:  defaultURLs.update(baseURLs),
 		UserAgent: userAgent,
 		Client:    http.DefaultClient,
+		Debugf:    func(string, ...interface{}) (int, error) { return 0, nil },
 	}
 }
 
@@ -71,6 +74,8 @@ func (bc basicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 
 	queryURL.RawQuery = q.Encode()
 
+	bc.Debugf("running query to URL: %s", queryURL.String())
+
 	response, err := bc.Client.Do(&http.Request{
 		Method: "GET",
 		URL:    queryURL,
@@ -80,12 +85,16 @@ func (bc basicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 	})
 
 	if err != nil {
+		bc.Debugf("query returned error: %v", err)
 		return nil, nil, err
 	}
+	bc.Debugf("response status %d, headers: %+v", response.StatusCode, response.Header)
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
+		bc.Debugf("error reading response body %v", err)
 		return nil, nil, err
 	}
+	bc.Debugf("========== start response body ==========\n%s\n========== end response body ==========", body)
 	if response.StatusCode != http.StatusOK {
 		return nil, nil, fmt.Errorf("Non-zero status %d; body: %s", response.StatusCode, string(body))
 	}
@@ -95,10 +104,17 @@ func (bc basicClient) SearchCollegiate(word string) ([]types.CollegiateResult, [
 
 	var err1, err2 error
 	if err1 = json.Unmarshal(body, &result); err1 == nil {
+		bc.Debugf("found body comparible with []CollegiateResult")
 		return result, nil, nil
 	} else if err2 = json.Unmarshal(body, &suggestions); err2 == nil {
+		bc.Debugf("found body comparible with []string (suggestions)")
 		return nil, suggestions, nil
 	}
+	bc.Debugf("found no compatible body")
 
 	return nil, nil, fmt.Errorf("could not parse response as results or suggestions; response was: %s", string(body))
+}
+
+func (bc *basicClient) SetDebugf(f func(string, ...interface{}) (int, error)) {
+	bc.Debugf = f
 }

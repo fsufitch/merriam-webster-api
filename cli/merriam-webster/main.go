@@ -14,7 +14,7 @@ var userAgent = fmt.Sprintf("merriam-webster CLI / mwapi %s", mwapi.Version)
 type printfFunc func(string, ...interface{}) (int, error)
 
 func debugf(format string, other ...interface{}) (int, error) {
-	return fmt.Fprintf(os.Stderr, "[DEBUG] "+format, other...)
+	return fmt.Fprintf(os.Stderr, "[DEBUG] "+format+"\n", other...)
 }
 
 type dictionary struct {

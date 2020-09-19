@@ -4,7 +4,7 @@ import "github.com/pkg/errors"
 
 // WithEtymology is a compositing type for parsing the `et` property
 type WithEtymology struct {
-	Etymology Etymology `json:"et"`
+	Etymology *Etymology `json:"et,omitempty"`
 }
 
 // Etymology https://dictionaryapi.com/products/json#sec-2.et

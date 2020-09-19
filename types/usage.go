@@ -5,13 +5,13 @@ import "github.com/pkg/errors"
 // WithUsages is a compositing type for parsing the `usages` property
 type WithUsages struct {
 	// https://dictionaryapi.com/products/json#sec-2.usages
-	UsageParagraphs []UsageParagraphs `json:"usages"`
+	UsageParagraphs []UsageParagraphs `json:"usages,omitempty"`
 }
 
 // UsageParagraphs https://dictionaryapi.com/products/json#sec-2.usages
 type UsageParagraphs struct {
-	Label string             `json:"pl"`
-	Text  UsageParagraphText `json:"pt"`
+	Label string              `json:"pl,omitempty"`
+	Text  *UsageParagraphText `json:"pt,omitempty"`
 }
 
 // UsageParagraphText https://dictionaryapi.com/products/json#sec-2.usages
@@ -85,5 +85,5 @@ type UsageParagraphTextItem struct {
 
 // UsageSeeAlso is "uaref" here https://dictionaryapi.com/products/json#sec-2.usages
 type UsageSeeAlso struct {
-	Reference string `json:"uaref"`
+	Reference string `json:"uaref,omitempty"`
 }

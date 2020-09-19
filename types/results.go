@@ -20,7 +20,7 @@ type CollegiateResult struct {
 
 	// misc
 	WithDefinedRunOns
-	withUndefinedRunOns
+	WithUndefinedRunOns
 	WithDirectionalCrossReferences
 	WithUsages
 	WithSynonyms
@@ -29,6 +29,8 @@ type CollegiateResult struct {
 
 	WithEtymology
 	WithFirstKnownDate
+	WithArt
+	WithVariants
 
 	WithShortDefinitions
 }

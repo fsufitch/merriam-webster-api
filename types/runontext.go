@@ -4,7 +4,7 @@ import "github.com/pkg/errors"
 
 // WithUndefinedRunonText is a compositing type for parsing the `utxt` property
 type WithUndefinedRunonText struct {
-	UndefinedRunonText UndefinedRunonText `json:"utxt"`
+	UndefinedRunonText *UndefinedRunonText `json:"utxt,omitempty"`
 }
 
 // UndefinedRunonText https://dictionaryapi.com/products/json#sec-2.uros
@@ -53,7 +53,7 @@ func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextItem, error) {
 		case UndefinedRunonTextItemTypeUsageNotes:
 			var out []UsageNote
 			err = el.UnmarshalValue(&out)
-			items = append(items, UndefinedRunonTextItem{Type: typ, withUsageNotes: withUsageNotes{out}})
+			items = append(items, UndefinedRunonTextItem{Type: typ, WithUsageNotes: WithUsageNotes{out}})
 		default:
 			err = errors.New("unknown item type in verbal illustration")
 		}
@@ -65,5 +65,5 @@ func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextItem, error) {
 type UndefinedRunonTextItem struct {
 	Type UndefinedRunonTextItemType
 	WithVerbalIllustrations
-	withUsageNotes
+	WithUsageNotes
 }

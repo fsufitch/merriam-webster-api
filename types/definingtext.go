@@ -5,7 +5,7 @@ import "github.com/pkg/errors"
 // WithDefiningText is a compositing type for parsing the `dt` property
 type WithDefiningText struct {
 	// https://dictionaryapi.com/products/json#sec-2.dt
-	DefiningText DefiningText `json:"dt"`
+	DefiningText DefiningText `json:"dt,omitempty"`
 }
 
 // DefiningTextItemType is an enum type for the types of items in DefiningText
@@ -85,7 +85,7 @@ func (dt DefiningText) Contents() ([]DefiningTextItem, error) {
 		case DefiningTextItemTypeUsageNotes:
 			var out []UsageNote
 			err = el.UnmarshalValue(&out)
-			items = append(items, DefiningTextItem{Type: typ, withUsageNotes: withUsageNotes{out}})
+			items = append(items, DefiningTextItem{Type: typ, WithUsageNotes: WithUsageNotes{out}})
 		case DefiningTextItemTypeVerbalIllustrations:
 			var out []VerbalIllustration
 			err = el.UnmarshalValue(&out)
@@ -109,28 +109,28 @@ type DefiningTextItem struct {
 	CalledAlso       *CalledAlso
 	RunIn            *RunIn
 	SupplementalInfo *SupplementalInfo
-	withUsageNotes
+	WithUsageNotes
 	WithVerbalIllustrations
 }
 
 // Biography https://dictionaryapi.com/products/json#sec-2.bnw
 type Biography struct {
-	PersonalName  string `json:"pname"`
-	Surname       string `json:"sname"`
-	AlternateName string `json:"altname"`
+	PersonalName  string `json:"pname,omitempty"`
+	Surname       string `json:"sname,omitempty"`
+	AlternateName string `json:"altname,omitempty"`
 }
 
 // CalledAlso https://dictionaryapi.com/products/json#sec-2.ca
 type CalledAlso struct {
-	Intro   string             `json:"intro"`
-	Targets []CalledAlsoTarget `json:"cats"`
+	Intro   string             `json:"intro,omitempty"`
+	Targets []CalledAlsoTarget `json:"cats,omitempty"`
 }
 
 // CalledAlsoTarget https://dictionaryapi.com/products/json#sec-2.ca
 type CalledAlsoTarget struct {
-	Text                string `json:"cat"`
-	TargetID            string `json:"catref"`
-	ParenthesizedNumber string `json:"pn"`
+	Text                string `json:"cat,omitempty"`
+	TargetID            string `json:"catref,omitempty"`
+	ParenthesizedNumber string `json:"pn,omitempty"`
 	WithPronounciations
 	WithParenthesizedSubjectStatusLabel
 }

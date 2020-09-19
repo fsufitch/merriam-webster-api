@@ -12,8 +12,9 @@ import (
 )
 
 func collegiateLookup(terms []string, url string, key string, json bool, verbose bool, debugf printfFunc) error {
-	debugf("looking up %v in collegiate\n", terms)
+	debugf("looking up %v in collegiate", terms)
 	client := mwapi.NewClient(key, userAgent, &mwapi.BaseURLs{Collegiate: url})
+	client.SetDebugf(debugf)
 	results, suggestions, err := client.SearchCollegiate(strings.Join(terms, " "))
 	if err != nil {
 		debugf("error during lookup: %v", err)
@@ -21,10 +22,10 @@ func collegiateLookup(terms []string, url string, key string, json bool, verbose
 	}
 
 	if len(results) > 0 {
-		debugf("found %d results; formatting...\n", len(results))
+		debugf("found %d results; formatting...", len(results))
 		return collegiateFormatResults(results, json, verbose)
 	} else if len(suggestions) > 0 {
-		debugf("found no results, but have %d suggestions; formatting...\n", len(suggestions))
+		debugf("found no results, but have %d suggestions; formatting...", len(suggestions))
 		return collegiateFormatSuggestions(suggestions, json)
 	}
 

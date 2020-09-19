@@ -2,5 +2,5 @@ package types
 
 // WithDirectionalCrossReferences is a compositing type for parsing the `dxlns` property
 type WithDirectionalCrossReferences struct {
-	DirectionalCrossReferences []string `json:"dxnls"`
+	DirectionalCrossReferences []string `json:"dxnls,omitempty"`
 }

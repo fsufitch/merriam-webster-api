@@ -2,7 +2,7 @@ package types
 
 // Sense https://dictionaryapi.com/products/json#sec-2.sense
 type Sense struct {
-	SenseNumber string `json:"sn"`
+	SenseNumber string `json:"sn,omitempty"`
 	WithDefiningText
 	WithInflections
 	WithGeneralLabels
