@@ -15,7 +15,7 @@ type SynonymParagraph struct {
 }
 
 // SynonymParagraphText https://dictionaryapi.com/products/json#sec-2.syns
-type SynonymParagraphText arrayContainer
+type SynonymParagraphText ArrayMultiMapContainer
 
 // SynonymParagraphTextElementType is an enum type for the types of elements in the paragraph
 type SynonymParagraphTextElementType int

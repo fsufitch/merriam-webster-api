@@ -14,7 +14,7 @@ type UsageParagraphs struct {
 }
 
 // UsageParagraphText https://dictionaryapi.com/products/json#sec-2.usages
-type UsageParagraphText arrayContainer
+type UsageParagraphText ArrayMultiMapContainer
 
 // UsageParagraphTextElementType is an enum type for the types of elements in the paragraph
 type UsageParagraphTextElementType int

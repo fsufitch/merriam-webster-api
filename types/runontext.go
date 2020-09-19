@@ -7,7 +7,7 @@ type withUndefinedRunonText struct {
 }
 
 // UndefinedRunonText https://dictionaryapi.com/products/json#sec-2.uros
-type UndefinedRunonText arrayContainer
+type UndefinedRunonText ArrayMultiMapContainer
 
 // UndefinedRunonTextElementType is an enum type for the types of elements in UndefinedRunonText
 type UndefinedRunonTextElementType int

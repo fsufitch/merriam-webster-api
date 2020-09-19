@@ -7,7 +7,7 @@ type withUsageNotes struct {
 }
 
 // UsageNote // https://dictionaryapi.com/products/json#sec-2.uns
-type UsageNote arrayContainer
+type UsageNote ArrayMultiMapContainer
 
 // UsageNoteElementType is an enum type for the types of elements in the Usage Note
 type UsageNoteElementType int

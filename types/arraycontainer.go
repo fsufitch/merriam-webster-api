@@ -4,15 +4,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ErrInvalidArrayContainer is an error used when the array container is improperly structured
-var ErrInvalidArrayContainer = errors.New("invalid array container")
+// ErrInvalidArrayMultiMapContainer is an error used when the array container is improperly structured
+var ErrInvalidArrayMultiMapContainer = errors.New("invalid array container")
 
-// ArrayContainer is an abstract type for de/serializing a JSON structure shaped like:
-// [ [string, any] ]
-type arrayContainer []arrayContainerElement
+// ArrayMultiMapContainer is an abstract type for de/serializing a JSON structure shaped like [ [string, any] ]
+type ArrayMultiMapContainer []MapItem
 
-func (a arrayContainer) Filter(key string) []*arrayContainerElement {
-	result := []*arrayContainerElement{}
+// Filter returns a slice of the items of the container that have the specified key
+func (a ArrayMultiMapContainer) Filter(key string) []*MapItem {
+	result := []*MapItem{}
 	for _, el := range a {
 		if k, _ := el.Key(); k == key {
 			result = append(result, &el)
@@ -21,27 +21,31 @@ func (a arrayContainer) Filter(key string) []*arrayContainerElement {
 	return result
 }
 
-type arrayContainerElement []interface{}
+// MapItem is a key/value pair represented in a 2-item slice
+type MapItem []interface{}
 
-func (el arrayContainerElement) Key() (string, error) {
-	if len(el) != 2 {
-		return "", errors.Wrap(ErrInvalidArrayContainer, "container element must have length 2")
+// Key returns the key string of it
+func (it MapItem) Key() (string, error) {
+	if len(it) != 2 {
+		return "", errors.Wrap(ErrInvalidArrayMultiMapContainer, "underlying slice must have length 2")
 	}
-	if key, ok := el[0].(string); ok {
+	if key, ok := it[0].(string); ok {
 		return key, nil
 	}
-	return "", errors.Wrap(ErrInvalidArrayContainer, "element[0] is not a string")
+	return "", errors.Wrap(ErrInvalidArrayMultiMapContainer, "item[0] is not a string")
 }
 
-func (el arrayContainerElement) Value() (interface{}, error) {
-	if len(el) != 2 {
-		return "", errors.Wrap(ErrInvalidArrayContainer, "container element must have length 2")
+// Value returns the interface{} value of it
+func (it MapItem) Value() (interface{}, error) {
+	if len(it) != 2 {
+		return "", errors.Wrap(ErrInvalidArrayMultiMapContainer, "underlying slice must have length 2")
 	}
-	return el[1], nil
+	return it[1], nil
 }
 
-func (el arrayContainerElement) UnmarshalValue(output interface{}) error {
-	value, err := el.Value()
+// UnmarshalValue marshals then unmarshals the value of the item; used to assert/assign types to an otherwise opaque interface{} value
+func (it MapItem) UnmarshalValue(output interface{}) error {
+	value, err := it.Value()
 	if err != nil {
 		return err
 	}

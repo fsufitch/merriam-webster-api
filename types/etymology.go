@@ -7,7 +7,7 @@ type withEtymology struct {
 }
 
 // Etymology https://dictionaryapi.com/products/json#sec-2.et
-type Etymology arrayContainer
+type Etymology ArrayMultiMapContainer
 
 // EtymologyElementType is an enum type for the types of elements in Etymology
 type EtymologyElementType int

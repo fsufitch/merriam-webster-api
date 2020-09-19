@@ -49,7 +49,7 @@ func (t DefiningTextElementType) String() string {
 }
 
 // DefiningText https://dictionaryapi.com/products/json#sec-2.dt
-type DefiningText arrayContainer
+type DefiningText ArrayMultiMapContainer
 
 // Contents returns a copied slice of the contents in the DefiningText
 func (dt DefiningText) Contents() ([]DefiningTextElement, error) {

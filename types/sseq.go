@@ -12,7 +12,7 @@ type withSenseSequence struct {
 }
 
 // SenseSequence https://dictionaryapi.com/products/json#sec-2.vis
-type SenseSequence arrayContainer
+type SenseSequence ArrayMultiMapContainer
 
 // SenseSequenceElementType is an enum type for the types of elements in SenseSequence
 type SenseSequenceElementType int

@@ -3,7 +3,7 @@ package types
 import "github.com/pkg/errors"
 
 // RunIn https://dictionaryapi.com/products/json#sec-2.ri
-type RunIn arrayContainer
+type RunIn ArrayMultiMapContainer
 
 // RunInElementType is an enum type for the types of elements in RI
 type RunInElementType int
