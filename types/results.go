@@ -10,8 +10,8 @@ type CollegiateResult struct {
 	WithGeneralLabels
 	WithSubjectStatusLabels
 	WithParenthesizedSubjectStatusLabel
-	WithSenseSpecificInflectionPluralLabel // might not belong here?
-	WithSenseSpecificGrammaticalLabel      // might not belong here?
+	WithSenseSpecificInflectionPluralLabel // XXX: might not belong here? docs unclear
+	WithSenseSpecificGrammaticalLabel      // XXX: might not belong here? docs unclear
 
 	WithInflections
 	WithCognateCrossReferences

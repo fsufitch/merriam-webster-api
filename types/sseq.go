@@ -13,56 +13,58 @@ type WithSenseSequence struct {
 }
 
 // SenseSequence https://dictionaryapi.com/products/json#sec-2.vis
-type SenseSequence ArrayMultiMapContainer
+type SenseSequence SequenceMapping
 
-// SenseSequenceElementType is an enum type for the types of elements in SenseSequence
-type SenseSequenceElementType int
+// SenseSequenceItemType is an enum type for the types of items in SenseSequence
+type SenseSequenceItemType int
 
-// Values for SenseSequenceElementType
+// Values for SenseSequenceItemType
 const (
-	SenseSequenceElementTypeUnknown = iota
-	SenseSequenceElementTypeSense
-	SenseSequenceElementTypeAbbreviatedSense
-	SenseSequenceElementTypeBindingSubstitute
-	SenseSequenceElementTypeSubSequence
-	SenseSequenceElementTypeParenthesizedSequence
+	SenseSequenceItemTypeUnknown = iota
+	SenseSequenceItemTypeSense
+	SenseSequenceItemTypeAbbreviatedSense
+	SenseSequenceItemTypeBindingSubstitute
+	SenseSequenceItemTypeSubSequence
+	SenseSequenceItemTypeParenthesizedSequence
 )
 
-// SenseSequenceElementTypeFromString returns a SenseSequenceElementType from its string ID
-func SenseSequenceElementTypeFromString(id string) SenseSequenceElementType {
+// SenseSequenceItemTypeFromString returns a SenseSequenceItemType from its string ID
+func SenseSequenceItemTypeFromString(id string) SenseSequenceItemType {
 	switch id {
 	case "sense":
-		return SenseSequenceElementTypeSense
+		return SenseSequenceItemTypeSense
 	case "sen":
-		return SenseSequenceElementTypeAbbreviatedSense
+		return SenseSequenceItemTypeAbbreviatedSense
 	case "bs":
-		return SenseSequenceElementTypeBindingSubstitute
+		return SenseSequenceItemTypeBindingSubstitute
 	case "pseq":
-		return SenseSequenceElementTypeParenthesizedSequence
+		return SenseSequenceItemTypeParenthesizedSequence
 	default:
-		return SenseSequenceElementTypeUnknown
+		return SenseSequenceItemTypeUnknown
 	}
 }
 
-func (t SenseSequenceElementType) String() string {
+func (t SenseSequenceItemType) String() string {
 	return []string{"", "sense", "sen", "bs", "", "pseq"}[t]
 }
 
 // Contents returns a copied slice of the contents in the SenseSequence
-func (vi SenseSequence) Contents() ([]SenseSequenceElement, error) {
+func (vi SenseSequence) Contents() ([]SenseSequenceItem, error) {
 
-	elements := []SenseSequenceElement{}
+	items := []SenseSequenceItem{}
 	for _, el := range vi {
 		if len(el) == 0 {
-			return nil, errors.New("zero length element")
+			return nil, errors.New("zero length item")
 		}
 		if _, ok := el[0].([]interface{}); ok {
+			// the elements might be either proper [string, interface{}] sequence items, or [sequence, ...] sub-sequences
+			// this block handles the latter case
 			out := SenseSequence{}
 			if err := reUnmarshal(el, &out); err != nil {
 				return nil, errors.Wrap(err, "error composing subsequence")
 
 			}
-			elements = append(elements, SenseSequenceElement{Type: SenseSequenceElementTypeSubSequence, SubSequence: &out})
+			items = append(items, SenseSequenceItem{Type: SenseSequenceItemTypeSubSequence, SubSequence: &out})
 			continue
 		}
 
@@ -70,34 +72,34 @@ func (vi SenseSequence) Contents() ([]SenseSequenceElement, error) {
 		if err != nil {
 			return nil, err
 		}
-		typ := SenseSequenceElementTypeFromString(key)
+		typ := SenseSequenceItemTypeFromString(key)
 		switch typ {
-		case SenseSequenceElementTypeSense:
+		case SenseSequenceItemTypeSense:
 			var out Sense
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SenseSequenceElement{Type: typ, Sense: &out})
-		case SenseSequenceElementTypeAbbreviatedSense:
+			items = append(items, SenseSequenceItem{Type: typ, Sense: &out})
+		case SenseSequenceItemTypeAbbreviatedSense:
 			var out AbbreviatedSense
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SenseSequenceElement{Type: typ, AbbreviatedSense: &out})
-		case SenseSequenceElementTypeBindingSubstitute:
+			items = append(items, SenseSequenceItem{Type: typ, AbbreviatedSense: &out})
+		case SenseSequenceItemTypeBindingSubstitute:
 			var out BindingSubstitute
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SenseSequenceElement{Type: typ, BindingSubstitute: &out})
-		case SenseSequenceElementTypeParenthesizedSequence:
+			items = append(items, SenseSequenceItem{Type: typ, BindingSubstitute: &out})
+		case SenseSequenceItemTypeParenthesizedSequence:
 			var out SenseSequence
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SenseSequenceElement{Type: typ, ParenthesizedSequence: &out})
+			items = append(items, SenseSequenceItem{Type: typ, ParenthesizedSequence: &out})
 		default:
 			err = errors.New("unknown element type in verbal illustration")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// SenseSequenceElement is an element of the SI container
-type SenseSequenceElement struct {
-	Type                  SenseSequenceElementType
+// SenseSequenceItem is an item of the SI container
+type SenseSequenceItem struct {
+	Type                  SenseSequenceItemType
 	Sense                 *Sense
 	AbbreviatedSense      *AbbreviatedSense
 	BindingSubstitute     *BindingSubstitute

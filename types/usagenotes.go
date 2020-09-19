@@ -8,69 +8,69 @@ type withUsageNotes struct {
 }
 
 // UsageNote // https://dictionaryapi.com/products/json#sec-2.uns
-type UsageNote ArrayMultiMapContainer
+type UsageNote SequenceMapping
 
-// UsageNoteElementType is an enum type for the types of elements in the Usage Note
-type UsageNoteElementType int
+// UsageNoteItemType is an enum type for the types of items in the Usage Note
+type UsageNoteItemType int
 
-// Values for UsageNoteElementType
+// Values for UsageNoteItemType
 const (
-	UsageNoteElementTypeUnknown UsageNoteElementType = iota
-	UsageNoteElementTypeText
-	UsageNoteElementTypeRunIn
-	UsageNoteElementTypeVerbalIllustration
+	UsageNoteItemTypeUnknown UsageNoteItemType = iota
+	UsageNoteItemTypeText
+	UsageNoteItemTypeRunIn
+	UsageNoteItemTypeVerbalIllustration
 )
 
-// UsageNoteElementTypeFromString returns a UsageNoteElementTYpe from its string ID
-func UsageNoteElementTypeFromString(id string) UsageNoteElementType {
+// UsageNoteItemTypeFromString returns a UsageNoteItemType from its string ID
+func UsageNoteItemTypeFromString(id string) UsageNoteItemType {
 	switch id {
 	case "text":
-		return UsageNoteElementTypeText
+		return UsageNoteItemTypeText
 	case "ri":
-		return UsageNoteElementTypeRunIn
+		return UsageNoteItemTypeRunIn
 	case "vis":
-		return UsageNoteElementTypeVerbalIllustration
+		return UsageNoteItemTypeVerbalIllustration
 	default:
-		return UsageNoteElementTypeUnknown
+		return UsageNoteItemTypeUnknown
 	}
 }
 
-func (t UsageNoteElementType) String() string {
+func (t UsageNoteItemType) String() string {
 	return []string{"", "text", "ri", "vis"}[t]
 }
 
 // Contents returns a copied slice of the contents in the UsageNote
-func (un UsageNote) Contents() ([]UsageNoteElement, error) {
-	elements := []UsageNoteElement{}
+func (un UsageNote) Contents() ([]UsageNoteItem, error) {
+	items := []UsageNoteItem{}
 	for _, el := range un {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := UsageNoteElementTypeFromString(key)
+		typ := UsageNoteItemTypeFromString(key)
 		switch typ {
-		case SupplementalInfoElementTypeText:
+		case SupplementalInfoItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageNoteElement{Type: typ, Text: &out})
-		case SupplementalInfoElementTypeRunIn:
+			items = append(items, UsageNoteItem{Type: typ, Text: &out})
+		case SupplementalInfoItemTypeRunIn:
 			var out RunIn
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageNoteElement{Type: typ, RunIn: &out})
-		case SupplementalInfoElementTypeVerbalIllustration:
+			items = append(items, UsageNoteItem{Type: typ, RunIn: &out})
+		case SupplementalInfoItemTypeVerbalIllustration:
 			var out VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageNoteElement{Type: typ, VerbalIllustration: &out})
+			items = append(items, UsageNoteItem{Type: typ, VerbalIllustration: &out})
 		default:
-			err = errors.New("unknown element type in supplemental info")
+			err = errors.New("unknown item type in supplemental info")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// UsageNoteElement is an element of the UsageNote container
-type UsageNoteElement struct {
-	Type               UsageNoteElementType
+// UsageNoteItem is an item of the UsageNote container
+type UsageNoteItem struct {
+	Type               UsageNoteItemType
 	Text               *string
 	RunIn              *RunIn
 	VerbalIllustration *VerbalIllustration

@@ -3,62 +3,62 @@ package types
 import "github.com/pkg/errors"
 
 // RunIn https://dictionaryapi.com/products/json#sec-2.ri
-type RunIn ArrayMultiMapContainer
+type RunIn SequenceMapping
 
-// RunInElementType is an enum type for the types of elements in RunIn
-type RunInElementType int
+// RunInItemType is an enum type for the types of items in RunIn
+type RunInItemType int
 
-// Values for RuninElementType
+// Values for RuninItemType
 const (
-	RunInElementTypeUnknown RunInElementType = iota
-	RunInElementTypeText
-	RunInElementTypeRunInWrap
+	RunInItemTypeUnknown RunInItemType = iota
+	RunInItemTypeText
+	RunInItemTypeRunInWrap
 )
 
-// RunInElementTypeFromString returns a RunInElementTYpe from its string ID
-func RunInElementTypeFromString(id string) RunInElementType {
+// RunInItemTypeFromString returns a RunInItemType from its string ID
+func RunInItemTypeFromString(id string) RunInItemType {
 	switch id {
 	case "text":
-		return RunInElementTypeText
+		return RunInItemTypeText
 	case "riw":
-		return RunInElementTypeRunInWrap
+		return RunInItemTypeRunInWrap
 	default:
-		return RunInElementTypeUnknown
+		return RunInItemTypeUnknown
 	}
 }
 
-func (t RunInElementType) String() string {
+func (t RunInItemType) String() string {
 	return []string{"", "text", "riw"}[t]
 }
 
 // Contents returns a copied slice of the contents in the RunIn
-func (ri RunIn) Contents() ([]RunInElement, error) {
-	elements := []RunInElement{}
+func (ri RunIn) Contents() ([]RunInItem, error) {
+	items := []RunInItem{}
 	for _, el := range ri {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := RunInElementTypeFromString(key)
+		typ := RunInItemTypeFromString(key)
 		switch typ {
-		case RunInElementTypeText:
+		case RunInItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, RunInElement{Type: typ, Text: &out})
-		case RunInElementTypeRunInWrap:
+			items = append(items, RunInItem{Type: typ, Text: &out})
+		case RunInItemTypeRunInWrap:
 			var out RunInWrap
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, RunInElement{Type: typ, RunInWrap: &out})
+			items = append(items, RunInItem{Type: typ, RunInWrap: &out})
 		default:
-			err = errors.New("unknown element type in run-in")
+			err = errors.New("unknown item type in run-in")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// RunInElement is an element of the RunIn container
-type RunInElement struct {
-	Type      RunInElementType
+// RunInItem is an item of the RunIn container
+type RunInItem struct {
+	Type      RunInItemType
 	Text      *string
 	RunInWrap *RunInWrap
 }

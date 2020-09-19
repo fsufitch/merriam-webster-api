@@ -8,102 +8,102 @@ type WithDefiningText struct {
 	DefiningText DefiningText `json:"dt"`
 }
 
-// DefiningTextElementType is an enum type for the types of elements in DT
-type DefiningTextElementType int
+// DefiningTextItemType is an enum type for the types of items in DefiningText
+type DefiningTextItemType int
 
-// Values for DefiningTextElementType
+// Values for DefiningTextItemType
 const (
-	DefiningTextElementTypeUnknown DefiningTextElementType = iota
-	DefiningTextElementTypeText
-	DefiningTextElementTypeBiography
-	DefiningTextElementTypeCalledAlso
-	DefiningTextElementTypeRunIn
-	DefiningTextElementTypeSupplementalInfo
-	DefiningTextElementTypeUsageNotes
-	DefiningTextElementTypeVerbalIllustrations
+	DefiningTextItemTypeUnknown DefiningTextItemType = iota
+	DefiningTextItemTypeText
+	DefiningTextItemTypeBiography
+	DefiningTextItemTypeCalledAlso
+	DefiningTextItemTypeRunIn
+	DefiningTextItemTypeSupplementalInfo
+	DefiningTextItemTypeUsageNotes
+	DefiningTextItemTypeVerbalIllustrations
 )
 
-// DefiningTextElementTypeFromString returns a DefiningTextElementType from its string ID
-func DefiningTextElementTypeFromString(id string) DefiningTextElementType {
+// DefiningTextItemTypeFromString returns a DefiningTextItemType from its string ID
+func DefiningTextItemTypeFromString(id string) DefiningTextItemType {
 	switch id {
 	case "text":
-		return DefiningTextElementTypeText
+		return DefiningTextItemTypeText
 	case "bnw":
-		return DefiningTextElementTypeBiography
+		return DefiningTextItemTypeBiography
 	case "ca":
-		return DefiningTextElementTypeCalledAlso
+		return DefiningTextItemTypeCalledAlso
 	case "ri":
-		return DefiningTextElementTypeRunIn
+		return DefiningTextItemTypeRunIn
 	case "snote":
-		return DefiningTextElementTypeSupplementalInfo
+		return DefiningTextItemTypeSupplementalInfo
 	case "uns":
-		return DefiningTextElementTypeUsageNotes
+		return DefiningTextItemTypeUsageNotes
 	case "vis":
-		return DefiningTextElementTypeVerbalIllustrations
+		return DefiningTextItemTypeVerbalIllustrations
 	default:
-		return DefiningTextElementTypeUnknown
+		return DefiningTextItemTypeUnknown
 	}
 }
 
-func (t DefiningTextElementType) String() string {
+func (t DefiningTextItemType) String() string {
 	return []string{"", "text", "bnw", "ca", "ri", "snote", "uns", "vis"}[t]
 }
 
 // DefiningText https://dictionaryapi.com/products/json#sec-2.dt
-type DefiningText ArrayMultiMapContainer
+type DefiningText SequenceMapping
 
 // Contents returns a copied slice of the contents in the DefiningText
-func (dt DefiningText) Contents() ([]DefiningTextElement, error) {
-	elements := []DefiningTextElement{}
+func (dt DefiningText) Contents() ([]DefiningTextItem, error) {
+	items := []DefiningTextItem{}
 	for _, el := range dt {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := DefiningTextElementTypeFromString(key)
+		typ := DefiningTextItemTypeFromString(key)
 		switch typ {
-		case DefiningTextElementTypeText:
+		case DefiningTextItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, Text: &out})
-		case DefiningTextElementTypeBiography:
+			items = append(items, DefiningTextItem{Type: typ, Text: &out})
+		case DefiningTextItemTypeBiography:
 			var out Biography
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, Biography: &out})
-		case DefiningTextElementTypeCalledAlso:
+			items = append(items, DefiningTextItem{Type: typ, Biography: &out})
+		case DefiningTextItemTypeCalledAlso:
 			var out CalledAlso
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, CalledAlso: &out})
-		case DefiningTextElementTypeRunIn:
+			items = append(items, DefiningTextItem{Type: typ, CalledAlso: &out})
+		case DefiningTextItemTypeRunIn:
 			var out RunIn
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, RunIn: &out})
-		case DefiningTextElementTypeSupplementalInfo:
+			items = append(items, DefiningTextItem{Type: typ, RunIn: &out})
+		case DefiningTextItemTypeSupplementalInfo:
 			var out SupplementalInfo
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, SupplementalInfo: &out})
-		case DefiningTextElementTypeUsageNotes:
+			items = append(items, DefiningTextItem{Type: typ, SupplementalInfo: &out})
+		case DefiningTextItemTypeUsageNotes:
 			var out []UsageNote
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, withUsageNotes: withUsageNotes{out}})
-		case DefiningTextElementTypeVerbalIllustrations:
+			items = append(items, DefiningTextItem{Type: typ, withUsageNotes: withUsageNotes{out}})
+		case DefiningTextItemTypeVerbalIllustrations:
 			var out []VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, DefiningTextElement{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
+			items = append(items, DefiningTextItem{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
 		default:
-			err = errors.New("unknown element type in defining text")
+			err = errors.New("unknown item type in defining text")
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// DefiningTextElement is an element in the DefiningText container.
+// DefiningTextItem is an item in the DefiningText container.
 // Type indicated which property is populated with data.
-type DefiningTextElement struct {
-	Type             DefiningTextElementType
+type DefiningTextItem struct {
+	Type             DefiningTextItemType
 	Text             *string
 	Biography        *Biography
 	CalledAlso       *CalledAlso

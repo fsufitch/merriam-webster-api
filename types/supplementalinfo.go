@@ -1,71 +1,73 @@
 package types
 
-import "github.com/pkg/errors"
-
-// SupplementalInfo https://dictionaryapi.com/products/json#sec-2.snote
-type SupplementalInfo ArrayMultiMapContainer
-
-// SupplementalInfoElementType is an enum type for the types of elements in SupplementalInfo
-type SupplementalInfoElementType int
-
-// Values for SupplementalInfoElementType
-const (
-	SupplementalInfoElementTypeUnknown = iota
-	SupplementalInfoElementTypeText
-	SupplementalInfoElementTypeRunIn
-	SupplementalInfoElementTypeVerbalIllustration
+import (
+	"fmt"
 )
 
-// SupplementalInfoElementTypeFromString returns a SupplementalInfoElementType from its string ID
-func SupplementalInfoElementTypeFromString(id string) SupplementalInfoElementType {
+// SupplementalInfo https://dictionaryapi.com/products/json#sec-2.snote
+type SupplementalInfo SequenceMapping
+
+// SupplementalInfoItemType is an enum type for the types of items in SupplementalInfo
+type SupplementalInfoItemType int
+
+// Values for SupplementalInfoItemType
+const (
+	SupplementalInfoItemTypeUnknown = iota
+	SupplementalInfoItemTypeText
+	SupplementalInfoItemTypeRunIn
+	SupplementalInfoItemTypeVerbalIllustration
+)
+
+// SupplementalInfoItemTypeFromString returns a SupplementalInfoItemType from its string ID
+func SupplementalInfoItemTypeFromString(id string) SupplementalInfoItemType {
 	switch id {
 	case "t":
-		return SupplementalInfoElementTypeText
+		return SupplementalInfoItemTypeText
 	case "ri":
-		return SupplementalInfoElementTypeRunIn
+		return SupplementalInfoItemTypeRunIn
 	case "vis":
-		return SupplementalInfoElementTypeVerbalIllustration
+		return SupplementalInfoItemTypeVerbalIllustration
 	default:
-		return SupplementalInfoElementTypeUnknown
+		return SupplementalInfoItemTypeUnknown
 	}
 }
 
-func (t SupplementalInfoElementType) String() string {
+func (t SupplementalInfoItemType) String() string {
 	return []string{"", "t", "ri", "vis"}[t]
 }
 
 // Contents returns a copied slice of the contents in the SupplementalInfo
-func (si SupplementalInfo) Contents() ([]SupplementalInfoElement, error) {
-	elements := []SupplementalInfoElement{}
+func (si SupplementalInfo) Contents() ([]SupplementalInfoItem, error) {
+	items := []SupplementalInfoItem{}
 	for _, el := range si {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := SupplementalInfoElementTypeFromString(key)
+		typ := SupplementalInfoItemTypeFromString(key)
 		switch typ {
-		case SupplementalInfoElementTypeText:
+		case SupplementalInfoItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SupplementalInfoElement{Type: typ, Text: &out})
-		case SupplementalInfoElementTypeRunIn:
+			items = append(items, SupplementalInfoItem{Type: typ, Text: &out})
+		case SupplementalInfoItemTypeRunIn:
 			var out RunIn
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SupplementalInfoElement{Type: typ, RunIn: &out})
-		case SupplementalInfoElementTypeVerbalIllustration:
+			items = append(items, SupplementalInfoItem{Type: typ, RunIn: &out})
+		case SupplementalInfoItemTypeVerbalIllustration:
 			var out VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SupplementalInfoElement{Type: typ, VerbalIllustration: &out})
+			items = append(items, SupplementalInfoItem{Type: typ, VerbalIllustration: &out})
 		default:
-			err = errors.New("unknown element type in supplemental info")
+			err = fmt.Errorf("unknown item type in supplemental info: %v (enum: %v)", key, typ)
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// SupplementalInfoElement is an element of the SI container
-type SupplementalInfoElement struct {
-	Type               SupplementalInfoElementType
+// SupplementalInfoItem is an item of the SI container
+type SupplementalInfoItem struct {
+	Type               SupplementalInfoItemType
 	Text               *string
 	RunIn              *RunIn
 	VerbalIllustration *VerbalIllustration

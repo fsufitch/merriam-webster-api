@@ -16,62 +16,62 @@ type SynonymParagraph struct {
 }
 
 // SynonymParagraphText https://dictionaryapi.com/products/json#sec-2.syns
-type SynonymParagraphText ArrayMultiMapContainer
+type SynonymParagraphText SequenceMapping
 
-// SynonymParagraphTextElementType is an enum type for the types of elements in the paragraph
-type SynonymParagraphTextElementType int
+// SynonymParagraphTextItemType is an enum type for the types of items in the paragraph
+type SynonymParagraphTextItemType int
 
-// Values for SynonymParagraphTextElementType
+// Values for SynonymParagraphTextItemType
 const (
-	SynonymParagraphTextElementTypeUnknown SynonymParagraphTextElementType = iota
-	SynonymParagraphTextElementTypeText
-	SynonymParagraphTextElementTypeVerbalIllustration
+	SynonymParagraphTextItemTypeUnknown SynonymParagraphTextItemType = iota
+	SynonymParagraphTextItemTypeText
+	SynonymParagraphTextItemTypeVerbalIllustration
 )
 
-// SynonymParagraphTextElementTypeFromString returns a SynonymParagraphTextElementTYpe from its string ID
-func SynonymParagraphTextElementTypeFromString(id string) SynonymParagraphTextElementType {
+// SynonymParagraphTextItemTypeFromString returns a SynonymParagraphTextItemType from its string ID
+func SynonymParagraphTextItemTypeFromString(id string) SynonymParagraphTextItemType {
 	switch id {
 	case "text":
-		return SynonymParagraphTextElementTypeText
+		return SynonymParagraphTextItemTypeText
 	case "vis":
-		return SynonymParagraphTextElementTypeVerbalIllustration
+		return SynonymParagraphTextItemTypeVerbalIllustration
 	default:
-		return SynonymParagraphTextElementTypeUnknown
+		return SynonymParagraphTextItemTypeUnknown
 	}
 }
 
-func (t SynonymParagraphTextElementType) String() string {
+func (t SynonymParagraphTextItemType) String() string {
 	return []string{"", "text", "vis"}[t]
 }
 
 // Contents returns a copied slice of the contents in the SynonymParagraphText
-func (upt SynonymParagraphText) Contents() ([]SynonymParagraphTextElement, error) {
-	elements := []SynonymParagraphTextElement{}
+func (upt SynonymParagraphText) Contents() ([]SynonymParagraphTextItem, error) {
+	items := []SynonymParagraphTextItem{}
 	for _, el := range upt {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := SynonymParagraphTextElementTypeFromString(key)
+		typ := SynonymParagraphTextItemTypeFromString(key)
 		switch typ {
-		case SynonymParagraphTextElementTypeText:
+		case SynonymParagraphTextItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SynonymParagraphTextElement{Type: typ, Text: &out})
-		case SynonymParagraphTextElementTypeVerbalIllustration:
+			items = append(items, SynonymParagraphTextItem{Type: typ, Text: &out})
+		case SynonymParagraphTextItemTypeVerbalIllustration:
 			var out VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, SynonymParagraphTextElement{Type: typ, VerbalIllustration: &out})
+			items = append(items, SynonymParagraphTextItem{Type: typ, VerbalIllustration: &out})
 		default:
-			err = errors.New("unknown element type in run-in")
+			err = errors.New("unknown item type in run-in")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// SynonymParagraphTextElement is an element of the SynonymParagraphText container
-type SynonymParagraphTextElement struct {
-	Type               SynonymParagraphTextElementType
+// SynonymParagraphTextItem is an item of the SynonymParagraphText container
+type SynonymParagraphTextItem struct {
+	Type               SynonymParagraphTextItemType
 	Text               *string
 	VerbalIllustration *VerbalIllustration
 }

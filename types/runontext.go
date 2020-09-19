@@ -8,62 +8,62 @@ type WithUndefinedRunonText struct {
 }
 
 // UndefinedRunonText https://dictionaryapi.com/products/json#sec-2.uros
-type UndefinedRunonText ArrayMultiMapContainer
+type UndefinedRunonText SequenceMapping
 
-// UndefinedRunonTextElementType is an enum type for the types of elements in UndefinedRunonText
-type UndefinedRunonTextElementType int
+// UndefinedRunonTextItemType is an enum type for the types of items in UndefinedRunonText
+type UndefinedRunonTextItemType int
 
-// Values for UndefinedRunonTextElementType
+// Values for UndefinedRunonTextItemType
 const (
-	UndefinedRunonTextElementTypeUnknown = iota
-	UndefinedRunonTextElementTypeVerbalIllustrations
-	UndefinedRunonTextElementTypeUsageNotes
+	UndefinedRunonTextItemTypeUnknown = iota
+	UndefinedRunonTextItemTypeVerbalIllustrations
+	UndefinedRunonTextItemTypeUsageNotes
 )
 
-// UndefinedRunonTextElementTypeFromString returns a UndefinedRunonTextElementType from its string ID
-func UndefinedRunonTextElementTypeFromString(id string) UndefinedRunonTextElementType {
+// UndefinedRunonTextItemTypeFromString returns a UndefinedRunonTextItemType from its string ID
+func UndefinedRunonTextItemTypeFromString(id string) UndefinedRunonTextItemType {
 	switch id {
 	case "vis":
-		return UndefinedRunonTextElementTypeVerbalIllustrations
+		return UndefinedRunonTextItemTypeVerbalIllustrations
 	case "uns":
-		return UndefinedRunonTextElementTypeUsageNotes
+		return UndefinedRunonTextItemTypeUsageNotes
 	default:
-		return UndefinedRunonTextElementTypeUnknown
+		return UndefinedRunonTextItemTypeUnknown
 	}
 }
 
-func (t UndefinedRunonTextElementType) String() string {
+func (t UndefinedRunonTextItemType) String() string {
 	return []string{"", "vis", "uns"}[t]
 }
 
 // Contents returns a copied slice of the contents in the UndefinedRunonText
-func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextElement, error) {
-	elements := []UndefinedRunonTextElement{}
+func (uro UndefinedRunonText) Contents() ([]UndefinedRunonTextItem, error) {
+	items := []UndefinedRunonTextItem{}
 	for _, el := range uro {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := UndefinedRunonTextElementTypeFromString(key)
+		typ := UndefinedRunonTextItemTypeFromString(key)
 		switch typ {
-		case UndefinedRunonTextElementTypeVerbalIllustrations:
+		case UndefinedRunonTextItemTypeVerbalIllustrations:
 			var out []VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UndefinedRunonTextElement{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
-		case UndefinedRunonTextElementTypeUsageNotes:
+			items = append(items, UndefinedRunonTextItem{Type: typ, WithVerbalIllustrations: WithVerbalIllustrations{out}})
+		case UndefinedRunonTextItemTypeUsageNotes:
 			var out []UsageNote
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UndefinedRunonTextElement{Type: typ, withUsageNotes: withUsageNotes{out}})
+			items = append(items, UndefinedRunonTextItem{Type: typ, withUsageNotes: withUsageNotes{out}})
 		default:
-			err = errors.New("unknown element type in verbal illustration")
+			err = errors.New("unknown item type in verbal illustration")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// UndefinedRunonTextElement is an element of the SI container
-type UndefinedRunonTextElement struct {
-	Type UndefinedRunonTextElementType
+// UndefinedRunonTextItem is an item of the SI container
+type UndefinedRunonTextItem struct {
+	Type UndefinedRunonTextItemType
 	WithVerbalIllustrations
 	withUsageNotes
 }

@@ -8,62 +8,62 @@ type WithEtymology struct {
 }
 
 // Etymology https://dictionaryapi.com/products/json#sec-2.et
-type Etymology ArrayMultiMapContainer
+type Etymology SequenceMapping
 
-// EtymologyElementType is an enum type for the types of elements in Etymology
-type EtymologyElementType int
+// EtymologyItemType is an enum type for the types of items in Etymology
+type EtymologyItemType int
 
 // Values for EtymologyElementType
 const (
-	EtymologyElementTypeUnknown = iota
-	EtymologyElementTypeText
-	EtymologyElementTypeSupplementalInfo
+	EtymologyItemTypeUnknown = iota
+	EtymologyItemTypeText
+	EtymologyItemTypeSupplementalInfo
 )
 
-// EtymologyElementTypeFromString returns a EtymologyElementType from its string ID
-func EtymologyElementTypeFromString(id string) EtymologyElementType {
+// EtymologyItemTypeFromString returns a EtymologyItemType from its string ID
+func EtymologyItemTypeFromString(id string) EtymologyItemType {
 	switch id {
 	case "text":
-		return EtymologyElementTypeText
+		return EtymologyItemTypeText
 	case "et_snote":
-		return EtymologyElementTypeSupplementalInfo
+		return EtymologyItemTypeSupplementalInfo
 	default:
-		return EtymologyElementTypeUnknown
+		return EtymologyItemTypeUnknown
 	}
 }
 
-func (t EtymologyElementType) String() string {
+func (t EtymologyItemType) String() string {
 	return []string{"", "text", "et_snote"}[t]
 }
 
 // Contents returns a copied slice of the contents in the Etymology
-func (ety Etymology) Contents() ([]EtymologyElement, error) {
-	elements := []EtymologyElement{}
+func (ety Etymology) Contents() ([]EtymologyItem, error) {
+	items := []EtymologyItem{}
 	for _, el := range ety {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := EtymologyElementTypeFromString(key)
+		typ := EtymologyItemTypeFromString(key)
 		switch typ {
-		case EtymologyElementTypeText:
+		case EtymologyItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, EtymologyElement{Type: typ, Text: &out})
-		case EtymologyElementTypeSupplementalInfo:
+			items = append(items, EtymologyItem{Type: typ, Text: &out})
+		case EtymologyItemTypeSupplementalInfo:
 			var out SupplementalInfo
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, EtymologyElement{Type: typ, SupplementalInfo: &out})
+			items = append(items, EtymologyItem{Type: typ, SupplementalInfo: &out})
 		default:
-			err = errors.New("unknown element type in etymology")
+			err = errors.New("unknown item type in etymology")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// EtymologyElement is an element of the SI container
-type EtymologyElement struct {
-	Type             EtymologyElementType
+// EtymologyItem is an item of the SI container
+type EtymologyItem struct {
+	Type             EtymologyItemType
 	Text             *string
 	SupplementalInfo *SupplementalInfo
 }

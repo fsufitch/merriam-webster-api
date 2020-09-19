@@ -15,69 +15,69 @@ type UsageParagraphs struct {
 }
 
 // UsageParagraphText https://dictionaryapi.com/products/json#sec-2.usages
-type UsageParagraphText ArrayMultiMapContainer
+type UsageParagraphText SequenceMapping
 
-// UsageParagraphTextElementType is an enum type for the types of elements in the paragraph
-type UsageParagraphTextElementType int
+// UsageParagraphTextItemType is an enum type for the types of items in the paragraph
+type UsageParagraphTextItemType int
 
-// Values for UsageParagraphTextElementType
+// Values for UsageParagraphTextItemType
 const (
-	UsageParagraphTextElementTypeUnknown UsageParagraphTextElementType = iota
-	UsageParagraphTextElementTypeText
-	UsageParagraphTextElementTypeVerbalIllustration
-	UsageParagraphTextElementTypeSeeAlso
+	UsageParagraphTextItemTypeUnknown UsageParagraphTextItemType = iota
+	UsageParagraphTextItemTypeText
+	UsageParagraphTextItemTypeVerbalIllustration
+	UsageParagraphTextItemTypeSeeAlso
 )
 
-// UsageParagraphTextElementTypeFromString returns a UsageParagraphTextElementTYpe from its string ID
-func UsageParagraphTextElementTypeFromString(id string) UsageParagraphTextElementType {
+// UsageParagraphTextItemTypeFromString returns a UsageParagraphTextItemType from its string ID
+func UsageParagraphTextItemTypeFromString(id string) UsageParagraphTextItemType {
 	switch id {
 	case "text":
-		return UsageParagraphTextElementTypeText
+		return UsageParagraphTextItemTypeText
 	case "vis":
-		return UsageParagraphTextElementTypeVerbalIllustration
+		return UsageParagraphTextItemTypeVerbalIllustration
 	case "uarefs":
-		return UsageParagraphTextElementTypeSeeAlso
+		return UsageParagraphTextItemTypeSeeAlso
 	default:
-		return UsageParagraphTextElementTypeUnknown
+		return UsageParagraphTextItemTypeUnknown
 	}
 }
 
-func (t UsageParagraphTextElementType) String() string {
+func (t UsageParagraphTextItemType) String() string {
 	return []string{"", "text", "vis", "uarefs"}[t]
 }
 
 // Contents returns a copied slice of the contents in the UsageParagraphText
-func (upt UsageParagraphText) Contents() ([]UsageParagraphTextElement, error) {
-	elements := []UsageParagraphTextElement{}
+func (upt UsageParagraphText) Contents() ([]UsageParagraphTextItem, error) {
+	items := []UsageParagraphTextItem{}
 	for _, el := range upt {
 		key, err := el.Key()
 		if err != nil {
 			return nil, err
 		}
-		typ := UsageParagraphTextElementTypeFromString(key)
+		typ := UsageParagraphTextItemTypeFromString(key)
 		switch typ {
-		case UsageParagraphTextElementTypeText:
+		case UsageParagraphTextItemTypeText:
 			var out string
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageParagraphTextElement{Type: typ, Text: &out})
-		case UsageParagraphTextElementTypeVerbalIllustration:
+			items = append(items, UsageParagraphTextItem{Type: typ, Text: &out})
+		case UsageParagraphTextItemTypeVerbalIllustration:
 			var out VerbalIllustration
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageParagraphTextElement{Type: typ, VerbalIllustration: &out})
-		case UsageParagraphTextElementTypeSeeAlso:
+			items = append(items, UsageParagraphTextItem{Type: typ, VerbalIllustration: &out})
+		case UsageParagraphTextItemTypeSeeAlso:
 			var out []UsageSeeAlso
 			err = el.UnmarshalValue(&out)
-			elements = append(elements, UsageParagraphTextElement{Type: typ, SeeAlso: out})
+			items = append(items, UsageParagraphTextItem{Type: typ, SeeAlso: out})
 		default:
 			err = errors.New("unknown element type in run-in")
 		}
 	}
-	return elements, nil
+	return items, nil
 }
 
-// UsageParagraphTextElement is an element of the UsageParagraphText container
-type UsageParagraphTextElement struct {
-	Type               UsageParagraphTextElementType
+// UsageParagraphTextItem is an item of the UsageParagraphText container
+type UsageParagraphTextItem struct {
+	Type               UsageParagraphTextItemType
 	Text               *string
 	VerbalIllustration *VerbalIllustration
 	SeeAlso            []UsageSeeAlso
