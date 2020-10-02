@@ -1,4 +1,4 @@
 package mwapi
 
 // Version of mwapi, accessible programmatically
-const Version = "0.0.1"
+const Version = "0.0.2"
