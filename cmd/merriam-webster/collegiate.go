@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	a "github.com/logrusorgru/aurora"
-
 	mwapi "github.com/fsufitch/merriam-webster-api"
+	mwfmt "github.com/fsufitch/merriam-webster-api/format"
 	"github.com/fsufitch/merriam-webster-api/types"
+	"github.com/logrusorgru/aurora/v3"
 )
 
 func collegiateLookup(terms []string, url string, key string, json bool, verbose bool, debugf printfFunc) error {
@@ -51,52 +51,11 @@ func collegiateFormatResults(results []types.CollegiateResult, toJSON bool, verb
 		return err
 	}
 
-	for i, entry := range results {
-		hw := strings.ReplaceAll(entry.HeadwordInfo.Headword, "*", "")
-		fmt.Printf("%s %s", a.Underline(a.Bold(hw)), entry.Function)
-		if len(results) > 1 {
-			fmt.Printf(" (%d of %d)", i+1, len(results))
-		}
-		fmt.Println()
-
-		prsStrings := []string{}
-		prsSep := "; "
-		for _, prs := range entry.HeadwordInfo.Pronounciations {
-			prsStrings = append(prsStrings, fmt.Sprintf("%s %s %s", prs.LabelBefore, prs.MerriamWebsterFormat, prs.LabelAfter))
-		}
-		if len(prsStrings) > 0 {
-			fmt.Printf("\\%s\\\n", strings.Join(prsStrings, prsSep))
-		}
-
-		for j, def := range entry.Definitions {
-			if len(entry.Definitions) > 1 {
-				fmt.Printf("%d ", j+1)
-			}
-
-			senses, err := def.SenseSequence.Contents()
-			if err != nil {
-				return err
-			}
-
-			for _, sense := range senses {
-				fmt.Printf("Sense: %+v\n", sense)
-				if sense.SubSequence != nil {
-					subSenses, err := sense.SubSequence.Contents()
-					if err != nil {
-						return err
-					}
-					for _, subsense := range subSenses {
-						fmt.Printf(" - Subsense: %+v\n", subsense)
-						if subsense.Sense != nil {
-							fmt.Printf("   - sense DT: %+v\n", subsense.Sense.DefiningText)
-						}
-					}
-				}
-				// fmt.Printf("%+v\n", sense.Sense.DefiningText)
-			}
-		}
-
+	output, err := mwfmt.Format(results).ANSI(mwfmt.FormatterOptions{}.WithAurora(aurora.NewAurora(true)))
+	if err != nil {
+		return err
 	}
+	fmt.Print(output)
 	return nil
 }
 
